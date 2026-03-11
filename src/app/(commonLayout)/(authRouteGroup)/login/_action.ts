@@ -1,4 +1,4 @@
-"use  server";
+"use server";
 
 import { httpClient } from "@/lib/axios/httpClient";
 import { setTokenINCookies } from "@/lib/tokenUtils";
@@ -20,14 +20,20 @@ export const loginAction = async (payload: ILoginPayload): Promise<ILoginRespons
     try {
         const response = await httpClient.post<ILoginResponse>("/auth/login", parsedPayload.data);
 
+        console.log(response.data)
+
         const { accessToken, refreshToken, token, user } = response.data;
-        await setTokenINCookies("better-auth.session_token", accessToken);
-        await setTokenINCookies("better-auth.session_token", refreshToken);
-        await setTokenINCookies("better-auth.session_token", token);
+        await setTokenINCookies("accessToken", accessToken);
+        await setTokenINCookies("refreshToken", refreshToken);
+        await setTokenINCookies("better-auth.session_token", token, 24 * 60 * 60);
 
         redirect("/dashboard");
 
     } catch (error: any) {
+
+        if (error && typeof error === "object" && "digest" in error && typeof error.digest === "string" && error.digest.startsWith("NEXT_REDIRECT")) {
+            throw error;
+        }
         return {
             success: false,
             message: `Login Failed : ${error.message}`,

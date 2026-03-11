@@ -1,7 +1,8 @@
+import LogiForm from "@/components/modules/auth/LogiForm"
 
 const LoginPage = () => {
   return (
-    <div>LoginPage</div>
+    <LogiForm/>
   )
 }
 

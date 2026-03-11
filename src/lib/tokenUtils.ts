@@ -1,4 +1,4 @@
-"use  server";
+"use server";
 
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { setCookie } from "./cookiesUtils";
@@ -25,8 +25,9 @@ const getTokenSecondRemaining = (token: string): number => {
 export const setTokenINCookies = async (
     name: string,
     token: string,
+    failbackMaxAgeInSeconds = 24 * 60 * 60,
 ) => {
     const maxAgeInSeconds = getTokenSecondRemaining(token);
 
-    await setCookie(name, token, maxAgeInSeconds);
+    await setCookie(name, token, maxAgeInSeconds || failbackMaxAgeInSeconds || 0);
 }
